@@ -1,12 +1,32 @@
-<!DOCTYPE html>
+                                        <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Ultra Suite · Ultimate Workspace</title>
+<title>Ultra Suite · LocalGram</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FIREBASE SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDdhHFqurnV8N0YAji68cb6cICcryCRoME",
+  authDomain: "ultra-suite.firebaseapp.com",
+  projectId: "ultra-suite",
+  storageBucket: "ultra-suite.firebasestorage.app",
+  messagingSenderId: "572154672079",
+  appId: "1:572154672079:web:0a98ce94bdac8e4da098ba"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+</script>
+
 <script>
 tailwind.config = {
     darkMode: 'class',
@@ -20,13 +40,15 @@ tailwind.config = {
 </script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',sans-serif;background:#070a12;color:#f3f4f6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html,body{overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:#070a12;color:#f3f4f6;-webkit-font-smoothing:antialiased}
 body.light-mode{background:#f1f5f9;color:#0f172a}
 body.light-mode .glass-panel{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.08)}
 body.light-mode .glass-card{background:rgba(255,255,255,0.7);border-color:rgba(0,0,0,0.06)}
 body.light-mode .text-slate-300,body.light-mode .text-slate-400{color:#475569!important}
 body.light-mode .text-white{color:#0f172a!important}
 body.light-mode input,body.light-mode textarea,body.light-mode select{background:#fff!important;color:#0f172a!important;border-color:#cbd5e1!important}
+body.light-mode .bg-slate-950,body.light-mode .bg-slate-950\/60,body.light-mode .bg-slate-950\/40,body.light-mode .bg-slate-950\/30,body.light-mode .bg-slate-900,body.light-mode .bg-slate-900\/60{background:#fff!important}
 .glass-panel{background:rgba(15,23,42,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}
 .glass-card{background:rgba(30,41,59,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);transition:all 0.25s cubic-bezier(0.4,0,0.2,1)}
 .glass-card:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-2px);box-shadow:0 10px 25px -5px rgba(99,102,241,0.2)}
@@ -58,17 +80,6 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 .msg-bubble.me{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-bottom-right-radius:4px;margin-left:auto}
 .msg-bubble.other{background:rgba(30,41,59,0.9);border:1px solid rgba(255,255,255,0.08);color:#f3f4f6;border-bottom-left-radius:4px}
 .msg-time{font-size:10px;opacity:0.7;margin-top:3px;text-align:right}
-@media(min-width:768px){
-#view-messages{display:flex!important;gap:16px;height:calc(100vh-140px)}
-#messagesListView{display:flex!important;width:340px;flex-shrink:0;flex-direction:column;height:100%}
-#chatView{flex:1;height:100%}
-#chatView.hidden{display:none!important}
-}
-@media(max-width:767px){
-#messagesListView.hidden-mobile{display:none!important}
-#chatView.hidden{display:none!important}
-}
-#chatMessages::-webkit-scrollbar{width:6px}
 .piano-key{transition:all 0.1s;cursor:pointer;user-select:none}
 .piano-key:active,.piano-key.playing{background:#6366f1!important;transform:translateY(2px)}
 .drum-pad{transition:all 0.1s;cursor:pointer;user-select:none}
@@ -78,6 +89,15 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 .sudoku-cell.fixed{background:rgba(99,102,241,0.15);color:#a5b4fc}
 .sudoku-cell.err{color:#ef4444}
 .g2048-cell{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;border-radius:8px;transition:all 0.15s}
+.lg-tab{transition:all 0.2s}
+.lg-tab:active{transform:scale(0.9)}
+
+/* LOCALGRAM FULL SCREEN */
+#view-localgram{height:calc(100vh - 61px);display:flex;flex-direction:column;overflow:hidden}
+#lgScrollArea{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.lg-story-ring{background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);padding:2.5px;border-radius:50%}
+.lg-story-ring.seen{background:rgba(255,255,255,0.2)}
+@media(max-width:767px){#view-localgram{height:calc(100vh - 61px)}}
 </style>
 </head>
 <body class="animated-gradient-bg min-h-screen text-slate-100 flex flex-col antialiased">
@@ -276,4 +296,4 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 <script src="part2.js"></script>
 <script src="part3.js"></script>
 </body>
-  </html>
+</html>                                                                                              </html>
