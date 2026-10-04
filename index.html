@@ -1,4 +1,4 @@
-                                        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
 <meta charset="UTF-8">
@@ -14,7 +14,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 
 <script>
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyDdhHFqurnV8N0YAji68cb6cICcryCRoME",
   authDomain: "ultra-suite.firebaseapp.com",
   projectId: "ultra-suite",
@@ -23,8 +23,6 @@ const firebaseConfig = {
   appId: "1:572154672079:web:0a98ce94bdac8e4da098ba"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
 </script>
 
 <script>
@@ -38,6 +36,7 @@ tailwind.config = {
     }
 }
 </script>
+
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{overflow-x:hidden}
@@ -48,7 +47,6 @@ body.light-mode .glass-card{background:rgba(255,255,255,0.7);border-color:rgba(0
 body.light-mode .text-slate-300,body.light-mode .text-slate-400{color:#475569!important}
 body.light-mode .text-white{color:#0f172a!important}
 body.light-mode input,body.light-mode textarea,body.light-mode select{background:#fff!important;color:#0f172a!important;border-color:#cbd5e1!important}
-body.light-mode .bg-slate-950,body.light-mode .bg-slate-950\/60,body.light-mode .bg-slate-950\/40,body.light-mode .bg-slate-950\/30,body.light-mode .bg-slate-900,body.light-mode .bg-slate-900\/60{background:#fff!important}
 .glass-panel{background:rgba(15,23,42,0.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}
 .glass-card{background:rgba(30,41,59,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);transition:all 0.25s cubic-bezier(0.4,0,0.2,1)}
 .glass-card:hover{border-color:rgba(99,102,241,0.4);transform:translateY(-2px);box-shadow:0 10px 25px -5px rgba(99,102,241,0.2)}
@@ -98,6 +96,215 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 .lg-story-ring{background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);padding:2.5px;border-radius:50%}
 .lg-story-ring.seen{background:rgba(255,255,255,0.2)}
 @media(max-width:767px){#view-localgram{height:calc(100vh - 61px)}}
+
+/* ==================== PREMIUM LOGIN DESIGN ==================== */
+#loginScreen {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+#loginScreen::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+    top: -200px;
+    left: -200px;
+    animation: float1 15s ease-in-out infinite;
+}
+
+#loginScreen::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, transparent 70%);
+    bottom: -150px;
+    right: -150px;
+    animation: float2 18s ease-in-out infinite;
+}
+
+@keyframes float1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, 60px) scale(1.2); }
+}
+
+@keyframes float2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-80px, -60px) scale(1.3); }
+}
+
+#loginScreen > div.relative {
+    background: rgba(15, 12, 41, 0.75) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border: 1px solid rgba(139, 92, 246, 0.4) !important;
+    box-shadow: 
+        0 25px 70px rgba(0, 0, 0, 0.6),
+        0 0 100px rgba(139, 92, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative;
+    z-index: 10;
+}
+
+#loginScreen .w-16.h-16 {
+    animation: pulse 3s ease-in-out infinite;
+    box-shadow: 
+        0 0 40px rgba(139, 92, 246, 0.8),
+        0 0 80px rgba(139, 92, 246, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), 0 0 80px rgba(139, 92, 246, 0.4); }
+    50% { transform: scale(1.08); box-shadow: 0 0 60px rgba(139, 92, 246, 1), 0 0 120px rgba(139, 92, 246, 0.6); }
+}
+
+#loginScreen h1 {
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #ec4899 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+}
+
+#loginScreen input {
+    background: rgba(15, 12, 41, 0.6) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    transition: all 0.3s ease !important;
+    color: #fff !important;
+}
+
+#loginScreen input::placeholder {
+    color: rgba(165, 180, 252, 0.5) !important;
+}
+
+#loginScreen input:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 
+        0 0 0 3px rgba(139, 92, 246, 0.2),
+        0 0 30px rgba(139, 92, 246, 0.4) !important;
+    background: rgba(15, 12, 41, 0.9) !important;
+}
+
+#authSubmitBtn {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%) !important;
+    box-shadow: 
+        0 10px 30px rgba(139, 92, 246, 0.4),
+        0 0 40px rgba(236, 72, 153, 0.3) !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease !important;
+}
+
+#authSubmitBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+#authSubmitBtn:hover::before {
+    left: 100%;
+}
+
+#authSubmitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 15px 40px rgba(139, 92, 246, 0.6),
+        0 0 60px rgba(236, 72, 153, 0.5) !important;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+}
+
+.divider span {
+    color: rgba(165, 180, 252, 0.7);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.social-login {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    backdrop-filter: blur(10px);
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.social-btn.google {
+    background: linear-gradient(135deg, rgba(234, 67, 53, 0.15), rgba(66, 133, 244, 0.15));
+    border-color: rgba(66, 133, 244, 0.4);
+}
+
+.social-btn.google:hover {
+    background: linear-gradient(135deg, rgba(234, 67, 53, 0.3), rgba(66, 133, 244, 0.3));
+    box-shadow: 0 10px 30px rgba(66, 133, 244, 0.4);
+}
+
+.social-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+#authTab-login, #authTab-signup {
+    transition: all 0.3s ease !important;
+}
+
+#authTab-login.bg-indigo-600,
+#authTab-signup.bg-indigo-600 {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#loginScreen > div.relative {
+    animation: slideIn 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
 </style>
 </head>
 <body class="animated-gradient-bg min-h-screen text-slate-100 flex flex-col antialiased">
@@ -105,41 +312,87 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 <div id="toastContainer" class="fixed top-5 right-5 z-[200] flex flex-col gap-2 pointer-events-none"></div>
 <div id="mobileBackdrop" onclick="closeSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden lg:hidden"></div>
 
-<!-- LOGIN SCREEN -->
-<div id="loginScreen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 overflow-y-auto">
-<div class="absolute inset-0 overflow-hidden pointer-events-none">
-<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl"></div>
-<div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl"></div>
-</div>
-<div class="relative glass-card rounded-3xl p-8 w-full max-w-md border border-indigo-500/30 shadow-2xl my-8">
+<!-- LOGIN SCREEN (PREMIUM) -->
+<div id="loginScreen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+<div class="relative rounded-3xl p-8 w-full max-w-md my-8">
 <div class="text-center mb-6">
-<div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/40 mb-4">
+<div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-cyan-400 flex items-center justify-center mb-4">
 <i class="fa-solid fa-bolt text-white text-2xl"></i>
 </div>
-<h1 class="font-heading font-extrabold text-3xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">ULTRA<span class="text-indigo-400">SUITE</span></h1>
+<h1 class="font-heading font-extrabold text-3xl tracking-tight">
+ULTRA<span class="text-pink-400">SUITE</span>
+</h1>
 <p class="text-slate-400 text-sm mt-2" id="loginSubtitle">Sign in to continue</p>
 </div>
+
+<!-- Tabs -->
 <div class="flex gap-2 mb-6 bg-slate-900/60 rounded-xl p-1">
-<button onclick="switchAuthTab('login')" id="authTab-login" class="flex-1 py-2 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white"><i class="fa-solid fa-right-to-bracket mr-1"></i> Login</button>
-<button onclick="switchAuthTab('signup')" id="authTab-signup" class="flex-1 py-2 rounded-lg text-xs font-semibold transition text-slate-400 hover:text-white"><i class="fa-solid fa-user-plus mr-1"></i> Sign Up</button>
+<button onclick="switchAuthTab('login')" id="authTab-login" class="flex-1 py-2 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white">
+<i class="fa-solid fa-right-to-bracket mr-1"></i> Login
+</button>
+<button onclick="switchAuthTab('signup')" id="authTab-signup" class="flex-1 py-2 rounded-lg text-xs font-semibold transition text-slate-400 hover:text-white">
+<i class="fa-solid fa-user-plus mr-1"></i> Sign Up
+</button>
 </div>
+
+<!-- Form -->
 <div class="space-y-4">
 <div>
-<label class="text-xs font-semibold text-slate-300 flex items-center gap-2 mb-2"><i class="fa-solid fa-user text-indigo-400"></i><span>Username</span></label>
-<input type="text" id="loginUsername" placeholder="Enter username..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+<label class="text-xs font-semibold text-slate-300 flex items-center gap-2 mb-2">
+<i class="fa-solid fa-user text-purple-400"></i>
+<span>Username</span>
+</label>
+<input type="text" id="loginUsername" placeholder="Enter username..." class="w-full rounded-xl px-4 py-3 text-sm focus:outline-none">
 </div>
 <div>
-<label class="text-xs font-semibold text-slate-300 flex items-center gap-2 mb-2"><i class="fa-solid fa-lock text-indigo-400"></i><span>Password</span></label>
+<label class="text-xs font-semibold text-slate-300 flex items-center gap-2 mb-2">
+<i class="fa-solid fa-lock text-purple-400"></i>
+<span>Password</span>
+</label>
 <div class="relative">
-<input type="password" id="loginPassword" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 pr-12">
-<button onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"><i id="eyeIcon" class="fa-solid fa-eye text-sm"></i></button>
-</div>
-</div>
-<button onclick="handleAuth()" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/30 transition flex items-center justify-center gap-2">
-<i class="fa-solid fa-right-to-bracket"></i><span id="authSubmitText">Login</span>
+<input type="password" id="loginPassword" placeholder="Enter password..." class="w-full rounded-xl px-4 py-3 text-sm focus:outline-none pr-12">
+<button onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1">
+<i id="eyeIcon" class="fa-solid fa-eye text-sm"></i>
 </button>
-<p id="loginError" class="text-xs text-red-400 text-center hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i><span id="loginErrorText"></span></p>
-<p id="loginSuccess" class="text-xs text-emerald-400 text-center hidden"><i class="fa-solid fa-circle-check mr-1"></i><span id="loginSuccessText"></span></p>
+</div>
+</div>
+
+<button onclick="handleAuth()" id="authSubmitBtn" class="w-full py-3.5 rounded-xl text-white font-bold text-sm transition flex items-center justify-center gap-2">
+<i class="fa-solid fa-right-to-bracket"></i>
+<span id="authSubmitText">Login</span>
+</button>
+
+<p id="loginError" class="text-xs text-red-400 text-center hidden">
+<i class="fa-solid fa-circle-exclamation mr-1"></i>
+<span id="loginErrorText"></span>
+</p>
+<p id="loginSuccess" class="text-xs text-emerald-400 text-center hidden">
+<i class="fa-solid fa-circle-check mr-1"></i>
+<span id="loginSuccessText"></span>
+</p>
+
+<!-- Divider -->
+<div class="divider">
+<span>OR CONTINUE WITH</span>
+</div>
+
+<!-- Google Login Only -->
+<div class="social-login" style="display:block">
+<button onclick="loginWithGoogle()" class="social-btn google" style="width:100%">
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+<path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+<path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+<path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+</svg>
+<span>Continue with Gmail</span>
+</button>
+</div>
+
+<p class="text-[10px] text-slate-500 text-center pt-4">
+🔐 Protected area · Secure login
+</p>
+
 </div>
 </div>
 </div>
@@ -296,4 +549,4 @@ body.light-mode.animated-gradient-bg{background:linear-gradient(-45deg,#e2e8f0,#
 <script src="part2.js"></script>
 <script src="part3.js"></script>
 </body>
-</html>                                                                                              </html>
+  </html>
