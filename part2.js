@@ -1,6 +1,15 @@
+// ==================== PART 2: CORE JAVASCRIPT (100% WORKING) ====================
+
+// Firebase references (index.html এ initialize করা আছে)
 var FS = firebase.firestore();
-var AUTH = firebase.auth();// ==================== PART 2: CORE JAVASCRIPT ====================
-// Auth, Users, Messages, Admin, Notes, Alarm, Timer
+var AUTH = firebase.auth();
+
+// Global access for part3.js
+window.FS = FS;
+window.AUTH = AUTH;
+
+console.log('🔥 Firebase FS:', typeof FS);
+console.log('🔥 Firebase AUTH:', typeof AUTH);
 
 // ==================== CONFIG ====================
 const ADMIN_PASSWORD = "wifeysamia";
@@ -19,14 +28,8 @@ let selectedChatUser = null;
 let usersDB = JSON.parse(localStorage.getItem('ultra_users')) || [];
 let activityLogs = JSON.parse(localStorage.getItem('ultra_logs')) || [];
 let siteSettings = JSON.parse(localStorage.getItem('ultra_site_settings')) || { siteName:'Ultra Suite', announcement:'' };
-let currentChatUnsubscribe = null;
 
-// ==================== FIREBASE ALIASES ====================
-// db এবং auth index.html এ initialized
-const FS = window.db;
-const AUTH = window.auth;
-
-// ==================== ADMIN USER (localStorage) ====================
+// ==================== ADMIN USER (Local Cache) ====================
 if (!usersDB.find(u => u.username === 'wifey_samia')) {
     usersDB.push({
         id: 'admin_1', username: 'wifey_samia', displayName: 'Wifey Samia',
@@ -154,7 +157,6 @@ async function handleAuth() {
     }
 
     if (currentAuthTab === 'login') {
-        // Firebase থেকে user খুঁজুন
         try {
             const snap = await FS.collection('users').where('username', '==', username).limit(1).get();
             if (snap.empty) {
@@ -184,7 +186,6 @@ async function handleAuth() {
                 visits: (user.visits || 0) + 1
             });
             localStorage.setItem('ultra_current_user', user.id);
-            // Local cache এ update
             const localIdx = usersDB.findIndex(u => u.id === user.id);
             if (localIdx >= 0) usersDB[localIdx] = user; else usersDB.push(user);
             saveUsers();
@@ -192,12 +193,11 @@ async function handleAuth() {
             playSound('success');
             loginSuccess();
         } catch(e) {
-            console.error(e);
+            console.error('Login error:', e);
             errorText.textContent = 'Connection error: ' + e.message;
             errorEl.classList.remove('hidden');
         }
     } else {
-        // SIGN UP - Check username unique
         try {
             const snap = await FS.collection('users').where('username', '==', username).limit(1).get();
             if (!snap.empty) {
@@ -222,7 +222,7 @@ async function handleAuth() {
             playSound('success');
             openProfileSetup();
         } catch(e) {
-            console.error(e);
+            console.error('Signup error:', e);
             errorText.textContent = 'Connection error: ' + e.message;
             errorEl.classList.remove('hidden');
         }
@@ -277,7 +277,7 @@ async function completeSignup() {
             displayName,
             bio,
             avatar: window._setupAvatar || null,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: Date.now()
         };
         
         const docRef = await FS.collection('users').add(userData);
@@ -292,7 +292,10 @@ async function completeSignup() {
         addNotification(`🎉 Welcome ${displayName}!`, 'user-plus');
         playSound('success');
         document.getElementById('profileSetupModal').classList.add('hidden');
-        setTimeout(() => { document.getElementById('loginScreen').style.display = 'flex'; loginSuccess(); }, 300);
+        setTimeout(() => { 
+            document.getElementById('loginScreen').style.display = 'flex'; 
+            loginSuccess(); 
+        }, 300);
         window._pendingUser = null;
         window._setupAvatar = null;
     } catch(e) {
@@ -360,6 +363,96 @@ async function handleLogout() {
     document.getElementById('loginScreen').classList.remove('login-fade-out');
     document.getElementById('loginPassword').value = '';
     document.getElementById('loginUsername').value = '';
+}
+
+// ==================== GOOGLE LOGIN ====================
+async function loginWithGoogle() {
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await AUTH.signInWithPopup(provider);
+        const fbUser = result.user;
+        
+        const email = fbUser.email || '';
+        const snap = await FS.collection('users').where('email', '==', email).limit(1).get();
+        
+        if (snap.empty) {
+            // New user from Google
+            let username = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (username.length < 3) username = 'user' + Date.now().toString().slice(-6);
+            
+            // Check username unique
+            const checkSnap = await FS.collection('users').where('username', '==', username).limit(1).get();
+            if (!checkSnap.empty) username = username + Date.now().toString().slice(-4);
+            
+            const userData = {
+                username: username,
+                displayName: fbUser.displayName || username,
+                email: email,
+                avatar: fbUser.photoURL || null,
+                password: 'google_' + Date.now(),
+                status: 'active',
+                joined: new Date().toISOString().split('T')[0],
+                lastLogin: new Date().toISOString(),
+                isOnline: true,
+                visits: 1,
+                isAdmin: false,
+                bio: '',
+                isPrivate: false,
+                following: [],
+                followers: [],
+                provider: 'google',
+                createdAt: Date.now()
+            };
+            
+            const docRef = await FS.collection('users').add(userData);
+            const newUser = { id: docRef.id, ...userData };
+            usersDB.push(newUser);
+            saveUsers();
+            currentUser = newUser;
+            localStorage.setItem('ultra_current_user', newUser.id);
+            
+            addLog(`Google signup: ${newUser.username}`, 'user-plus');
+            showToast('🎉 Welcome ' + newUser.displayName, 'success');
+            playSound('success');
+            loginSuccess();
+        } else {
+            // Existing user
+            const userDoc = snap.docs[0];
+            const user = { id: userDoc.id, ...userDoc.data() };
+            
+            if (user.status === 'banned') {
+                showToast('আপনার অ্যাকাউন্ট ব্যান করা হয়েছে', 'error');
+                await AUTH.signOut();
+                return;
+            }
+            
+            currentUser = user;
+            await FS.collection('users').doc(user.id).update({
+                lastLogin: new Date().toISOString(),
+                isOnline: true,
+                visits: (user.visits || 0) + 1
+            });
+            localStorage.setItem('ultra_current_user', user.id);
+            
+            const localIdx = usersDB.findIndex(u => u.id === user.id);
+            if (localIdx >= 0) usersDB[localIdx] = user; else usersDB.push(user);
+            saveUsers();
+            
+            addLog(`${user.username} logged in via Google`, 'login');
+            showToast('✅ Welcome back!', 'success');
+            playSound('success');
+            loginSuccess();
+        }
+    } catch(e) {
+        console.error('Google login error:', e);
+        if (e.code === 'auth/popup-closed-by-user') {
+            showToast('Login cancelled', 'info');
+        } else if (e.code === 'auth/popup-blocked') {
+            showToast('Popup blocked. Allow popups and try again', 'error');
+        } else {
+            showToast('Google login failed: ' + e.message, 'error');
+        }
+    }
 }
 
 // ==================== AUTO LOGIN ====================
@@ -434,7 +527,7 @@ function buildSidebar() {
                 <span>${m.name}</span>
             </div>
             ${m.tag ? `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-pink-500/20 text-pink-300">${m.tag}</span>` : ''}
-            ${m.badgeId ? `<span id="${m.badgeId}" class="px-2 py-0.5 text-xs rounded-full bg-slate-800 text-slate-400 font-mono">${customApps.length}</span>` : ''}
+            ${m.badgeId ? `<span id="${m.badgeId}" class="px-2 py-0.5 text-xs rounded-full bg-slate-800 text-slate-400 font-mono">${(typeof customApps !== 'undefined' ? customApps.length : 0)}</span>` : ''}
         </button>
     `).join('');
 }
@@ -839,6 +932,5 @@ function resetStopwatch() {
     const l = document.getElementById('lapsList'); if(l) l.innerHTML = '';
 }
 
-console.log('%c📦 PART 2 Loaded', 'color:#ec4899;font-size:14px;font-weight:bold');
-console.log('%c🔥 Firebase Connected', 'color:#f59e0b;font-size:14px');
-    
+console.log('%c📦 PART 2 Loaded ✅', 'color:#ec4899;font-size:14px;font-weight:bold');
+console.log('%c🔥 Firebase ready!', 'color:#f59e0b;font-size:12px');
