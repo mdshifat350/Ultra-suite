@@ -1,4 +1,4 @@
-// ==================== PART 3: COMPLETE — LOCALGRAM + ALL TOOLS ====================
+// ==================== PART 3 (FULL) — Message 1 ====================
 
 let todos = JSON.parse(localStorage.getItem('ultra_todos')) || [];
 let customApps = JSON.parse(localStorage.getItem('ultra_custom_apps')) || [];
@@ -10,7 +10,6 @@ let pomodoroInterval = null, pomodoroSeconds = 25*60, pomodoroMode = 'focus', po
 let autoRun = false;
 let game2048State = null, sudokuState = null;
 let lgCurrentTab = 'home';
-let lgCurrentFilter = 'all';
 let lgChatUnsubscribe = null;
 let lgSelectedChatUser = null;
 let lgCurrentStoryIndex = 0;
@@ -21,54 +20,53 @@ function saveCustomApps() { localStorage.setItem('ultra_custom_apps', JSON.strin
 function saveTransactions() { localStorage.setItem('ultra_transactions', JSON.stringify(transactions)); }
 function saveHabits() { localStorage.setItem('ultra_habits', JSON.stringify(habits)); }
 
-// ==================== VIEW BUILDER ====================
+// ==================== VIEW BUILDER (MAIN) ====================
 function buildViews() {
     const c = document.getElementById('viewsContainer');
-    if (!c) return;
-    c.innerHTML = `
-        ${dashboardView()}
-        ${localgramView()}
-        ${lgSettingsView()}
-        ${lgChatView()}
-        ${downloadAppView()}
-        ${quickEditorView()}
-        ${notepadView()}
-        ${alarmView()}
-        ${pomodoroView()}
-        ${qrView()}
-        ${colorsView()}
-        ${gradientView()}
-        ${converterView()}
-        ${calculatorView()}
-        ${ageCalcView()}
-        ${bmiView()}
-        ${loanView()}
-        ${expenseView()}
-        ${waterView()}
-        ${habitsView()}
-        ${calendarView()}
-        ${quotesView()}
-        ${diceView()}
-        ${jsonView()}
-        ${base64View()}
-        ${uuidView()}
-        ${markdownView()}
-        ${pianoView()}
-        ${drumView()}
-        ${metronomeView()}
-        ${game2048View()}
-        ${sudokuView()}
-        ${rpsView()}
-        ${slotView()}
-        ${webToolsView()}
-        ${customAppsView()}
-        ${arcadeView()}
-        ${videoStudioView()}
-        ${designStudioView()}
-        ${developerView()}
-        ${trackerView()}
-    `;
-    setTimeout(() => initializeViews(), 150);
+    if (!c) { console.error('viewsContainer missing'); return; }
+    c.innerHTML = 
+        dashboardView() +
+        localgramView() +
+        lgSettingsView() +
+        downloadAppView() +
+        quickEditorView() +
+        notepadView() +
+        alarmView() +
+        pomodoroView() +
+        qrView() +
+        colorsView() +
+        gradientView() +
+        converterView() +
+        calculatorView() +
+        ageCalcView() +
+        bmiView() +
+        loanView() +
+        expenseView() +
+        waterView() +
+        habitsView() +
+        calendarView() +
+        quotesView() +
+        diceView() +
+        jsonView() +
+        base64View() +
+        uuidView() +
+        markdownView() +
+        pianoView() +
+        drumView() +
+        metronomeView() +
+        game2048View() +
+        sudokuView() +
+        rpsView() +
+        slotView() +
+        webToolsView() +
+        customAppsView() +
+        arcadeView() +
+        videoStudioView() +
+        designStudioView() +
+        developerView() +
+        trackerView();
+    setTimeout(initializeViews, 200);
+    console.log('✅ buildViews completed');
 }
 
 // ==================== DASHBOARD ====================
@@ -109,15 +107,12 @@ function quickCard(tab, icon, color, name) {
 
 // ==================== LOCALGRAM VIEW ====================
 function localgramView() {
-    return `<div id="view-localgram" class="tab-content hidden">
-        <!-- TOP BAR -->
+    return `<div id="view-localgram" class="tab-content hidden" style="height:calc(100vh - 61px);display:flex;flex-direction:column;overflow:hidden;">
         <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/60 flex-shrink-0">
             <button onclick="lgOpenCreatePost()" class="text-white text-xl p-1"><i class="fa-solid fa-plus"></i></button>
             <h1 class="font-heading font-extrabold text-2xl tracking-tight bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">LocalGram</h1>
             <button onclick="lgShowNotifications()" class="text-white text-xl p-1"><i class="fa-regular fa-heart"></i></button>
         </div>
-
-        <!-- SEARCH BAR -->
         <div class="px-3 py-2 border-b border-slate-800 bg-slate-950/40 flex-shrink-0">
             <div class="relative">
                 <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
@@ -125,45 +120,36 @@ function localgramView() {
                 <button onclick="switchTab('lgSettings')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1"><i class="fa-solid fa-gear"></i></button>
             </div>
         </div>
-
-        <!-- SCROLL AREA -->
         <div id="lgScrollArea" class="flex-1 overflow-y-auto bg-slate-950/30">
             <div id="lgFeedContent"></div>
         </div>
-
-        <!-- BOTTOM NAV -->
         <div class="flex items-center justify-around py-2 border-t border-slate-800 bg-slate-950/80 flex-shrink-0">
             <button onclick="lgSwitchTab('home')" id="lg-tab-home" class="lg-tab text-white text-xl p-2"><i class="fa-solid fa-house"></i></button>
             <button onclick="lgSwitchTab('reels')" id="lg-tab-reels" class="lg-tab text-slate-500 hover:text-white text-xl p-2"><i class="fa-solid fa-clapperboard"></i></button>
             <button onclick="lgOpenCreatePost()" class="lg-tab text-white text-xl p-2"><i class="fa-regular fa-square-plus"></i></button>
-            <button onclick="lgSwitchTab('messages')" id="lg-tab-messages" class="lg-tab text-slate-500 hover:text-white text-xl p-2 relative"><i class="fa-solid fa-comments"></i></button>
+            <button onclick="lgSwitchTab('messages')" id="lg-tab-messages" class="lg-tab text-slate-500 hover:text-white text-xl p-2"><i class="fa-solid fa-comments"></i></button>
             <button onclick="lgSwitchTab('profile')" id="lg-tab-profile" class="lg-tab text-slate-500 hover:text-white text-xl p-2"><i class="fa-solid fa-user"></i></button>
         </div>
     </div>`;
 }
 
-// ==================== LOCALGRAM FEED ====================
+// ==================== LOCALGRAM FEED LOADER ====================
 async function loadLocalGramFeed() {
     const container = document.getElementById('lgFeedContent');
     if (!container) return;
     container.innerHTML = '<div class="p-8 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin text-2xl"></i><p class="mt-2 text-xs">Loading...</p></div>';
-    
     try {
         const now = Date.now();
         const storiesSnap = await FS.collection('stories').orderBy('createdAt', 'desc').limit(30).get();
         const stories = [];
         storiesSnap.forEach(doc => { const s = { id: doc.id, ...doc.data() }; if (!s.expiresAt || s.expiresAt > now) stories.push(s); });
-        
         const notesSnap = await FS.collection('lgNotes').orderBy('createdAt', 'desc').limit(30).get();
         const lgNotesList = [];
         notesSnap.forEach(doc => { const n = { id: doc.id, ...doc.data() }; if (!n.expiresAt || n.expiresAt > now) lgNotesList.push(n); });
-        
         const postsSnap = await FS.collection('posts').orderBy('createdAt', 'desc').limit(50).get();
         const posts = [];
         postsSnap.forEach(doc => posts.push({ id: doc.id, ...doc.data() }));
-        
         container.innerHTML = `
-            <!-- STORIES -->
             <div class="flex gap-3 overflow-x-auto p-4 border-b border-slate-800/60">
                 <div onclick="lgOpenAddStory()" class="flex-shrink-0 text-center cursor-pointer">
                     <div class="relative w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center mb-1">
@@ -182,8 +168,6 @@ async function loadLocalGramFeed() {
                     </div>
                 `).join('')}
             </div>
-
-            <!-- NOTES -->
             <div class="px-4 py-3 border-b border-slate-800/60">
                 <div class="flex items-center gap-2 mb-2">
                     <i class="fa-solid fa-comment-dots text-pink-400 text-sm"></i>
@@ -200,15 +184,13 @@ async function loadLocalGramFeed() {
                     `).join('')}
                 </div>
             </div>
-
-            <!-- POSTS -->
             <div>
                 ${posts.length === 0 ? '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-camera text-4xl mb-3 opacity-30"></i><p class="text-sm">No posts yet</p><p class="text-xs mt-1">Be the first to post!</p></div>' : posts.map(p => lgRenderPost(p)).join('')}
             </div>
         `;
     } catch(e) {
         console.error(e);
-        container.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-exclamation-triangle text-4xl mb-3 opacity-30"></i><p class="text-sm">Connection error</p></div>';
+        container.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-exclamation-triangle text-4xl mb-3 opacity-30"></i><p class="text-sm">Connection error: ' + e.message + '</p></div>';
     }
 }
 
@@ -248,16 +230,16 @@ function lgRenderPost(p) {
 
 function lgTimeAgo(ts) {
     if (!ts) return 'just now';
-    const seconds = Math.floor((Date.now() - ts) / 1000);
-    if (seconds < 60) return 'just now';
-    if (seconds < 3600) return Math.floor(seconds/60) + 'm ago';
-    if (seconds < 86400) return Math.floor(seconds/3600) + 'h ago';
-    return Math.floor(seconds/86400) + 'd ago';
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s/60) + 'm ago';
+    if (s < 86400) return Math.floor(s/3600) + 'h ago';
+    return Math.floor(s/86400) + 'd ago';
 }
 function lgEscapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
+    const d = document.createElement('div');
+    d.textContent = text || '';
+    return d.innerHTML;
 }
 
 // ==================== LOCALGRAM ACTIONS ====================
@@ -299,10 +281,8 @@ function lgOpenCreatePost() {
 
 async function lgSubmitPost() {
     const text = document.getElementById('lgPostText').value.trim();
-    const fileInput = document.getElementById('lgPostImage');
-    const file = fileInput.files[0];
+    const file = document.getElementById('lgPostImage').files[0];
     if (!text && !file) return showToast('কিছু লিখুন বা ছবি দিন', 'error');
-    
     let imageData = null;
     if (file) {
         if (file.size > 2 * 1024 * 1024) return showToast('ছবি ২MB এর কম হতে হবে', 'error');
@@ -312,9 +292,8 @@ async function lgSubmitPost() {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const maxSize = 800;
-                    let w = img.width, h = img.height;
-                    if (w > maxSize || h > maxSize) { if (w > h) { h = (maxSize/w)*h; w = maxSize; } else { w = (maxSize/h)*w; h = maxSize; } }
+                    let w = img.width, h = img.height, max = 800;
+                    if (w > max || h > max) { if (w > h) { h = (max/w)*h; w = max; } else { w = (max/h)*w; h = max; } }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                     resolve(canvas.toDataURL('image/jpeg', 0.6));
@@ -324,7 +303,6 @@ async function lgSubmitPost() {
             reader.readAsDataURL(file);
         });
     }
-    
     try {
         await FS.collection('posts').add({
             authorId: currentUser.id,
@@ -345,20 +323,15 @@ async function lgSubmitPost() {
 
 async function lgDeletePost(postId) {
     if (!confirm('Delete this post?')) return;
-    try {
-        await FS.collection('posts').doc(postId).delete();
-        showToast('Post deleted', 'success');
-        loadLocalGramFeed();
-    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    try { await FS.collection('posts').doc(postId).delete(); showToast('Post deleted', 'success'); loadLocalGramFeed(); }
+    catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 async function lgOpenComments(postId) {
     try {
         const doc = await FS.collection('posts').doc(postId).get();
         if (!doc.exists) return;
-        const post = doc.data();
-        const comments = post.comments || [];
-        
+        const comments = doc.data().comments || [];
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md z-[95] flex items-end md:items-center justify-center';
         modal.innerHTML = `
@@ -399,13 +372,7 @@ async function lgAddComment(postId) {
         const doc = await FS.collection('posts').doc(postId).get();
         if (!doc.exists) return;
         const comments = doc.data().comments || [];
-        comments.push({
-            uid: currentUser.id,
-            name: currentUser.displayName || currentUser.username,
-            avatar: currentUser.avatar || null,
-            text: text,
-            ts: Date.now()
-        });
+        comments.push({ uid: currentUser.id, name: currentUser.displayName || currentUser.username, avatar: currentUser.avatar || null, text: text, ts: Date.now() });
         await FS.collection('posts').doc(postId).update({ comments });
         input.value = '';
         document.querySelector('.fixed.z-\\[95\\]')?.remove();
@@ -418,16 +385,12 @@ function lgSharePost(postId) {
     navigator.clipboard.writeText(window.location.href + '#post_' + postId);
     showToast('📋 Link copied', 'success');
 }
-
-function lgShowNotifications() {
-    showToast('❤️ Notifications coming soon', 'info');
-}
+function lgShowNotifications() { showToast('❤️ Notifications coming soon', 'info'); }
 
 // ==================== STORIES ====================
 function lgOpenAddStory() {
     const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    input.type = 'file'; input.accept = 'image/*';
     input.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -464,10 +427,10 @@ function lgOpenAddStory() {
 
 async function lgViewStory(storyId) {
     try {
-        const storiesSnap = await FS.collection('stories').orderBy('createdAt', 'desc').limit(30).get();
         const now = Date.now();
+        const snap = await FS.collection('stories').orderBy('createdAt', 'desc').limit(30).get();
         lgCurrentStoryList = [];
-        storiesSnap.forEach(doc => { const s = { id: doc.id, ...doc.data() }; if (!s.expiresAt || s.expiresAt > now) lgCurrentStoryList.push(s); });
+        snap.forEach(doc => { const s = { id: doc.id, ...doc.data() }; if (!s.expiresAt || s.expiresAt > now) lgCurrentStoryList.push(s); });
         lgCurrentStoryIndex = lgCurrentStoryList.findIndex(s => s.id === storyId);
         if (lgCurrentStoryIndex < 0) lgCurrentStoryIndex = 0;
         lgShowStory();
@@ -477,7 +440,6 @@ async function lgViewStory(storyId) {
 function lgShowStory() {
     const story = lgCurrentStoryList[lgCurrentStoryIndex];
     if (!story) return;
-    
     const modal = document.createElement('div');
     modal.id = 'storyViewer';
     modal.className = 'fixed inset-0 bg-black z-[150] flex flex-col';
@@ -489,10 +451,7 @@ function lgShowStory() {
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center text-white font-bold overflow-hidden">
                 ${story.avatar ? `<img src="${story.avatar}" class="w-full h-full object-cover">` : (story.authorName||'?').charAt(0).toUpperCase()}
             </div>
-            <div class="flex-1">
-                <p class="text-sm font-bold text-white">${story.authorName}</p>
-                <p class="text-[10px] text-slate-400">${lgTimeAgo(story.createdAt)}</p>
-            </div>
+            <div class="flex-1"><p class="text-sm font-bold text-white">${story.authorName}</p><p class="text-[10px] text-slate-400">${lgTimeAgo(story.createdAt)}</p></div>
             <button onclick="this.closest('.fixed').remove()" class="text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex-1 flex items-center justify-center" onclick="lgNextStory()">
@@ -500,28 +459,16 @@ function lgShowStory() {
         </div>
         <div class="absolute left-0 top-20 bottom-20 w-1/3" onclick="event.stopPropagation(); lgPrevStory()"></div>
         <div class="absolute right-0 top-20 bottom-20 w-1/3" onclick="event.stopPropagation(); lgNextStory()"></div>
-        <div class="p-4 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent">
-            <input type="text" placeholder="Send message..." class="w-full bg-white/10 backdrop-blur border border-white/20 rounded-full px-4 py-2 text-sm text-white placeholder-white/60 focus:outline-none">
-        </div>
     `;
     document.body.appendChild(modal);
 }
 
 function lgNextStory() {
-    if (lgCurrentStoryIndex < lgCurrentStoryList.length - 1) {
-        lgCurrentStoryIndex++;
-        document.getElementById('storyViewer')?.remove();
-        lgShowStory();
-    } else {
-        document.getElementById('storyViewer')?.remove();
-    }
+    if (lgCurrentStoryIndex < lgCurrentStoryList.length - 1) { lgCurrentStoryIndex++; document.getElementById('storyViewer')?.remove(); lgShowStory(); }
+    else document.getElementById('storyViewer')?.remove();
 }
 function lgPrevStory() {
-    if (lgCurrentStoryIndex > 0) {
-        lgCurrentStoryIndex--;
-        document.getElementById('storyViewer')?.remove();
-        lgShowStory();
-    }
+    if (lgCurrentStoryIndex > 0) { lgCurrentStoryIndex--; document.getElementById('storyViewer')?.remove(); lgShowStory(); }
 }
 
 // ==================== NOTES ====================
@@ -539,11 +486,11 @@ function lgOpenCreateNote() {
             <div class="flex gap-2 items-center">
                 <span class="text-xs text-slate-400">Color:</span>
                 <div class="flex gap-1">
-                    <button onclick="lgSelectNoteColor('#ec4899')" class="w-6 h-6 rounded-full bg-pink-500 border-2 border-white/30"></button>
-                    <button onclick="lgSelectNoteColor('#8b5cf6')" class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white/30"></button>
-                    <button onclick="lgSelectNoteColor('#06b6d4')" class="w-6 h-6 rounded-full bg-cyan-500 border-2 border-white/30"></button>
-                    <button onclick="lgSelectNoteColor('#10b981')" class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-white/30"></button>
-                    <button onclick="lgSelectNoteColor('#f59e0b')" class="w-6 h-6 rounded-full bg-amber-500 border-2 border-white/30"></button>
+                    <button onclick="window._lgNoteColor='#ec4899'" class="w-6 h-6 rounded-full bg-pink-500"></button>
+                    <button onclick="window._lgNoteColor='#8b5cf6'" class="w-6 h-6 rounded-full bg-purple-500"></button>
+                    <button onclick="window._lgNoteColor='#06b6d4'" class="w-6 h-6 rounded-full bg-cyan-500"></button>
+                    <button onclick="window._lgNoteColor='#10b981'" class="w-6 h-6 rounded-full bg-emerald-500"></button>
+                    <button onclick="window._lgNoteColor='#f59e0b'" class="w-6 h-6 rounded-full bg-amber-500"></button>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -558,7 +505,6 @@ function lgOpenCreateNote() {
     ta.addEventListener('input', () => document.getElementById('lgNoteCount').textContent = ta.value.length);
     ta.focus();
 }
-function lgSelectNoteColor(color) { window._lgNoteColor = color; showToast('Color selected', 'info'); }
 
 async function lgSubmitNote() {
     const text = document.getElementById('lgNoteText').value.trim();
@@ -578,17 +524,11 @@ async function lgSubmitNote() {
         loadLocalGramFeed();
     } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
-
-function lgViewNote(id) {
-    showToast('💭 Note viewer coming soon', 'info');
-}
+function lgViewNote(id) { showToast('💭 Note viewer coming soon', 'info'); }
 
 // ==================== SEARCH ====================
 async function lgSearch(query) {
-    if (!query || query.length < 2) {
-        if (lgCurrentTab === 'search') loadLocalGramFeed();
-        return;
-    }
+    if (!query || query.length < 2) return;
     const container = document.getElementById('lgScrollArea');
     if (!container) return;
     container.innerHTML = '<div class="p-8 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin text-2xl"></i></div>';
@@ -596,10 +536,7 @@ async function lgSearch(query) {
         const q = query.toLowerCase();
         const snap = await FS.collection('users').get();
         const results = [];
-        snap.forEach(doc => {
-            const u = { id: doc.id, ...doc.data() };
-            if (u.username.toLowerCase().includes(q) || (u.displayName||'').toLowerCase().includes(q)) results.push(u);
-        });
+        snap.forEach(doc => { const u = { id: doc.id, ...doc.data() }; if (u.username.toLowerCase().includes(q) || (u.displayName||'').toLowerCase().includes(q)) results.push(u); });
         container.innerHTML = `
             <div class="p-4">
                 <h3 class="text-sm font-bold text-white mb-3">Results (${results.length})</h3>
@@ -631,22 +568,15 @@ function lgSwitchTab(tab) {
     });
     const activeBtn = document.getElementById('lg-tab-' + tab);
     if (activeBtn) { activeBtn.classList.remove('text-slate-500'); activeBtn.classList.add('text-white'); }
-    
     if (tab === 'home') loadLocalGramFeed();
-    if (tab === 'search') {
-        const c = document.getElementById('lgScrollArea');
-        if (c) c.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-magnifying-glass text-4xl mb-3 opacity-30"></i><p class="text-sm">Search users</p></div>';
-    }
-    if (tab === 'reels') {
-        const c = document.getElementById('lgScrollArea');
-        if (c) c.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-clapperboard text-4xl mb-3 opacity-30"></i><p class="text-sm">Reels Coming Soon</p></div>';
-    }
+    if (tab === 'search') { const c = document.getElementById('lgScrollArea'); if (c) c.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-magnifying-glass text-4xl mb-3 opacity-30"></i><p class="text-sm">Search users</p></div>'; }
+    if (tab === 'reels') { const c = document.getElementById('lgScrollArea'); if (c) c.innerHTML = '<div class="p-12 text-center text-slate-500"><i class="fa-solid fa-clapperboard text-4xl mb-3 opacity-30"></i><p class="text-sm">Reels Coming Soon</p></div>'; }
     if (tab === 'messages') lgLoadMessagesList();
     if (tab === 'profile') lgLoadMyProfile();
     playSound('click');
 }
 
-// ==================== MESSAGES LIST ====================
+// ==================== MESSAGES ====================
 async function lgLoadMessagesList() {
     const container = document.getElementById('lgScrollArea');
     if (!container) return;
@@ -654,10 +584,7 @@ async function lgLoadMessagesList() {
     try {
         const snap = await FS.collection('users').get();
         const users = [];
-        snap.forEach(doc => {
-            const u = { id: doc.id, ...doc.data() };
-            if (u.id !== currentUser.id) users.push(u);
-        });
+        snap.forEach(doc => { const u = { id: doc.id, ...doc.data() }; if (u.id !== currentUser.id) users.push(u); });
         container.innerHTML = `
             <div class="p-4">
                 <h3 class="text-sm font-bold text-white mb-3">Messages</h3>
@@ -678,7 +605,6 @@ async function lgLoadMessagesList() {
     } catch(e) { container.innerHTML = '<div class="p-8 text-center text-red-400 text-xs">Error</div>'; }
 }
 
-// ==================== CHAT ====================
 function getChatId(uid1, uid2) { return [uid1, uid2].sort().join('_'); }
 
 async function lgOpenChat(userId) {
@@ -686,7 +612,6 @@ async function lgOpenChat(userId) {
         const doc = await FS.collection('users').doc(userId).get();
         if (!doc.exists) return;
         const user = { id: doc.id, ...doc.data() };
-        
         const chatView = document.createElement('div');
         chatView.id = 'lgChatModal';
         chatView.className = 'fixed inset-0 bg-slate-950 z-[95] flex flex-col';
@@ -696,12 +621,9 @@ async function lgOpenChat(userId) {
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center text-white font-bold overflow-hidden">
                     ${user.avatar ? `<img src="${user.avatar}" class="w-full h-full object-cover">` : (user.displayName||user.username).charAt(0).toUpperCase()}
                 </div>
-                <div class="flex-1">
-                    <p class="text-sm font-bold text-white">${user.displayName || user.username}</p>
-                    <p class="text-[10px] ${user.isOnline ? 'text-emerald-400' : 'text-slate-500'}">${user.isOnline ? '🟢 Online' : 'Offline'}</p>
-                </div>
-                <button onclick="lgStartCall('${userId}', 'voice')" class="p-2 rounded-lg hover:bg-slate-800 text-emerald-400"><i class="fa-solid fa-phone"></i></button>
-                <button onclick="lgStartCall('${userId}', 'video')" class="p-2 rounded-lg hover:bg-slate-800 text-blue-400"><i class="fa-solid fa-video"></i></button>
+                <div class="flex-1"><p class="text-sm font-bold text-white">${user.displayName || user.username}</p><p class="text-[10px] ${user.isOnline ? 'text-emerald-400' : 'text-slate-500'}">${user.isOnline ? '🟢 Online' : 'Offline'}</p></div>
+                <button onclick="showToast('📞 Call coming soon','info')" class="p-2 rounded-lg hover:bg-slate-800 text-emerald-400"><i class="fa-solid fa-phone"></i></button>
+                <button onclick="showToast('🎥 Video call coming soon','info')" class="p-2 rounded-lg hover:bg-slate-800 text-blue-400"><i class="fa-solid fa-video"></i></button>
             </div>
             <div id="lgChatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-950/40"></div>
             <div class="p-3 border-t border-slate-800 bg-slate-900/60 flex items-end gap-2 flex-shrink-0">
@@ -711,7 +633,6 @@ async function lgOpenChat(userId) {
         `;
         document.body.appendChild(chatView);
         lgSelectedChatUser = userId;
-        
         const chatId = getChatId(currentUser.id, userId);
         if (lgChatUnsubscribe) lgChatUnsubscribe();
         lgChatUnsubscribe = FS.collection('chats').doc(chatId).collection('messages')
@@ -728,20 +649,18 @@ function lgRenderChatMessages(messages) {
     const box = document.getElementById('lgChatMessages');
     if (!box) return;
     if (messages.length === 0) {
-        box.innerHTML = '<div class="text-center text-slate-500 py-12"><i class="fa-solid fa-comments text-4xl mb-3 opacity-30"></i><p class="text-sm">No messages yet</p><p class="text-xs mt-1">Say hi! 👋</p></div>';
+        box.innerHTML = '<div class="text-center text-slate-500 py-12"><i class="fa-solid fa-comments text-4xl mb-3 opacity-30"></i><p class="text-sm">No messages yet</p></div>';
         return;
     }
     box.innerHTML = messages.map(m => {
         const isMe = m.from === currentUser.id;
         const time = new Date(m.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return `
-            <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
-                <div class="${isMe ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white' : 'bg-slate-800 text-slate-100'} px-3.5 py-2 rounded-2xl max-w-[75%] text-sm">
-                    <p>${lgEscapeHtml(m.text)}</p>
-                    <p class="text-[10px] ${isMe ? 'text-white/70' : 'text-slate-400'} mt-1 text-right">${time}</p>
-                </div>
+        return `<div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+            <div class="${isMe ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white' : 'bg-slate-800 text-slate-100'} px-3.5 py-2 rounded-2xl max-w-[75%] text-sm">
+                <p>${lgEscapeHtml(m.text)}</p>
+                <p class="text-[10px] ${isMe ? 'text-white/70' : 'text-slate-400'} mt-1 text-right">${time}</p>
             </div>
-        `;
+        </div>`;
     }).join('');
     box.scrollTop = box.scrollHeight;
 }
@@ -753,10 +672,7 @@ async function lgSendMessage(toUserId) {
     const chatId = getChatId(currentUser.id, toUserId);
     try {
         await FS.collection('chats').doc(chatId).collection('messages').add({
-            from: currentUser.id,
-            to: toUserId,
-            text: text,
-            ts: Date.now()
+            from: currentUser.id, to: toUserId, text: text, ts: Date.now()
         });
         input.value = '';
     } catch(e) { showToast('Error: ' + e.message, 'error'); }
@@ -768,10 +684,6 @@ function lgCloseChat() {
     lgSelectedChatUser = null;
 }
 
-function lgStartCall(userId, type) {
-    showToast('📞 ' + (type === 'video' ? 'Video' : 'Voice') + ' call coming soon', 'info');
-}
-
 // ==================== PROFILE ====================
 async function lgLoadMyProfile() {
     const container = document.getElementById('lgScrollArea');
@@ -781,7 +693,6 @@ async function lgLoadMyProfile() {
     const postSnap = await FS.collection('posts').where('authorId', '==', currentUser.id).get();
     const posts = [];
     postSnap.forEach(d => posts.push({ id: d.id, ...d.data() }));
-    
     container.innerHTML = `
         <div class="p-6 border-b border-slate-800/60">
             <div class="flex flex-col items-center">
@@ -797,8 +708,8 @@ async function lgLoadMyProfile() {
                     <div><p class="text-lg font-bold text-white">${(u.following||[]).length}</p><p class="text-[10px] text-slate-400">Following</p></div>
                 </div>
                 <div class="flex gap-2 mt-4">
-                    <button onclick="openProfileModal()" class="px-6 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold"><i class="fa-solid fa-pen mr-1"></i> Edit Profile</button>
-                    <button onclick="switchTab('lgSettings')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="openProfileModal()" class="px-6 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold"><i class="fa-solid fa-pen mr-1"></i> Edit Profile</button>
+                    <button onclick="switchTab('lgSettings')" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold"><i class="fa-solid fa-gear"></i></button>
                 </div>
             </div>
         </div>
@@ -812,360 +723,4 @@ async function lgLoadMyProfile() {
     `;
 }
 
-// ==================== LOCALGRAM SETTINGS ====================
-function lgSettingsView() {
-    return `<div id="view-lgSettings" class="tab-content hidden space-y-4">
-        <div class="flex items-center gap-3">
-            <button onclick="switchTab('localgram')" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i class="fa-solid fa-arrow-left"></i></button>
-            <h2 class="text-2xl font-heading font-bold text-white">Settings and Activity</h2>
-        </div>
-        
-        <div class="space-y-3 pb-6">
-            
-            <!-- Accounts Centre -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="p-4 border-b border-slate-800">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center"><i class="fa-solid fa-user text-white"></i></div>
-                        <div><p class="font-bold text-white text-sm">Accounts Centre</p><p class="text-[11px] text-slate-400">Password, security, personal details</p></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- How you use -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">How you use LocalGram</div>
-                ${lgSettingItem('fa-bookmark','Saved','', 'lgShowSaved()')}
-                ${lgSettingItem('fa-clock-rotate-left','Archive','', 'lgShowArchive()')}
-                ${lgSettingItem('fa-chart-line','Your activity','', 'lgShowActivity()')}
-                ${lgSettingItem('fa-bell','Notifications','', 'lgShowNotifSettings()')}
-                ${lgSettingItem('fa-clock','Time management','', 'lgShowTimeMgmt()')}
-            </div>
-
-            <!-- Who can see -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">Who can see your content</div>
-                <div onclick="lgTogglePrivacy()" class="flex items-center justify-between p-4 border-b border-slate-800 cursor-pointer hover:bg-slate-800/30">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-lock text-slate-400 w-5 text-center"></i>
-                        <span class="text-sm text-white">Account privacy</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400" id="lgPrivacyStatus">${currentUser?.isPrivate ? 'Private' : 'Public'}</span>
-                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
-                    </div>
-                </div>
-                ${lgSettingItem('fa-star','Close Friends','0', 'lgShowCloseFriends()')}
-                ${lgSettingItem('fa-ban','Blocked','', 'lgShowBlocked()')}
-                ${lgSettingItem('fa-image','Story, live and location','', 'lgShowStorySettings()')}
-                ${lgSettingItem('fa-users','Activity in Friends feed','', 'lgShowActivityFeed()')}
-            </div>
-
-            <!-- How others interact -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">How others can interact with you</div>
-                ${lgSettingItem('fa-comment','Messages and story replies','', 'lgShowMsgSettings()')}
-                ${lgSettingItem('fa-at','Tags and mentions','', 'lgShowTagsSettings()')}
-                ${lgSettingItem('fa-comment-dots','Comments','', 'lgShowCommentsSettings()')}
-                ${lgSettingItem('fa-share','Sharing and reuse','', 'lgShowShareSettings()')}
-                ${lgSettingItem('fa-ban','Restricted','0', 'lgShowRestricted()')}
-                ${lgSettingItem('fa-exclamation-circle','Limit interactions','Off', 'lgShowLimitSettings()')}
-                ${lgSettingItem('fa-font','Hidden words','', 'lgShowHiddenWords()')}
-            </div>
-
-            <!-- What you see -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">What you see</div>
-                ${lgSettingItem('fa-star','Favourites','0', 'lgShowFavourites()')}
-                ${lgSettingItem('fa-bell-slash','Muted accounts','0', 'lgShowMuted()')}
-                ${lgSettingItem('fa-sliders','Content preferences','', 'lgShowContentPrefs()')}
-                ${lgSettingItem('fa-heart','Like and share counts','', 'lgShowLikeCounts()')}
-            </div>
-
-            <!-- App and media -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">Your app and media</div>
-                ${lgSettingItem('fa-mobile','Device permissions','', 'lgShowPermissions()')}
-                ${lgSettingItem('fa-download','Archiving and downloading','', 'lgShowArchiving()')}
-                ${lgSettingItem('fa-universal-access','Accessibility','', 'lgShowAccessibility()')}
-                ${lgSettingItem('fa-language','Language and sound','', 'lgShowLanguage()')}
-                ${lgSettingItem('fa-signal','Data usage and media quality','', 'lgShowDataUsage()')}
-            </div>
-
-            <!-- Family Centre -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">Family Centre</div>
-                ${lgSettingItem('fa-house-user','Supervision','', 'lgShowSupervision()')}
-            </div>
-
-            <!-- Security -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/40">Security</div>
-                ${lgSettingItem('fa-shield-halved','Two-Step Verification','Off', 'lgOpenTwoStep()')}
-                ${lgSettingItem('fa-key','Change Password','', 'openProfileModal()')}
-                ${lgSettingItem('fa-envelope','Email Verification','', 'lgShowEmailVerify()')}
-                ${lgSettingItem('fa-mobile-screen','Phone Number','', 'lgShowPhoneVerify()')}
-            </div>
-
-            <!-- Logout -->
-            <button onclick="handleLogout()" class="w-full glass-card rounded-2xl p-4 text-left flex items-center gap-3 hover:border-red-500/40">
-                <i class="fa-solid fa-right-from-bracket text-red-400 w-5 text-center"></i>
-                <span class="text-sm font-semibold text-red-400">Logout</span>
-            </button>
-
-            <!-- Delete Account -->
-            <button onclick="lgDeleteAccount()" class="w-full glass-card rounded-2xl p-4 text-left flex items-center gap-3 hover:border-red-500/40">
-                <i class="fa-solid fa-trash text-red-400 w-5 text-center"></i>
-                <span class="text-sm font-semibold text-red-400">Delete Account</span>
-            </button>
-
-            <p class="text-center text-[10px] text-slate-500 pt-2">LocalGram v1.0 · Made by Shifat</p>
-        </div>
-    </div>`;
-}
-
-function lgSettingItem(icon, label, badge, onclick) {
-    return `<div onclick="${onclick}" class="flex items-center justify-between p-4 border-b border-slate-800 cursor-pointer hover:bg-slate-800/30">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid ${icon} text-slate-400 w-5 text-center"></i>
-            <span class="text-sm text-white">${label}</span>
-        </div>
-        <div class="flex items-center gap-2">
-            ${badge ? `<span class="text-xs text-slate-400">${badge}</span>` : ''}
-            <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
-        </div>
-    </div>`;
-}
-
-async function lgTogglePrivacy() {
-    if (!currentUser) return;
-    const newPrivate = !currentUser.isPrivate;
-    try {
-        await FS.collection('users').doc(currentUser.id).update({ isPrivate: newPrivate });
-        currentUser.isPrivate = newPrivate;
-        const el = document.getElementById('lgPrivacyStatus');
-        if (el) el.textContent = newPrivate ? 'Private' : 'Public';
-        showToast(newPrivate ? '🔒 Account is now Private' : '🌍 Account is now Public', 'success');
-    } catch(e) { showToast('Error: ' + e.message, 'error'); }
-}
-
-// Settings placeholders
-function lgShowSaved() { showToast('📥 Saved items — coming soon', 'info'); }
-function lgShowArchive() { showToast('📦 Archive — coming soon', 'info'); }
-function lgShowActivity() { showToast('📊 Your activity — coming soon', 'info'); }
-function lgShowNotifSettings() { showToast('🔔 Notification settings — coming soon', 'info'); }
-function lgShowTimeMgmt() { showToast('⏰ Time management — coming soon', 'info'); }
-function lgShowCloseFriends() { showToast('⭐ Close Friends — coming soon', 'info'); }
-function lgShowBlocked() { showToast('🚫 Blocked users — coming soon', 'info'); }
-function lgShowStorySettings() { showToast('📸 Story settings — coming soon', 'info'); }
-function lgShowActivityFeed() { showToast('👥 Activity feed — coming soon', 'info'); }
-function lgShowMsgSettings() { showToast('💬 Message settings — coming soon', 'info'); }
-function lgShowTagsSettings() { showToast('🏷️ Tags — coming soon', 'info'); }
-function lgShowCommentsSettings() { showToast('💭 Comments — coming soon', 'info'); }
-function lgShowShareSettings() { showToast('📤 Sharing — coming soon', 'info'); }
-function lgShowRestricted() { showToast('🚫 Restricted — coming soon', 'info'); }
-function lgShowLimitSettings() { showToast('⚠️ Limit — coming soon', 'info'); }
-function lgShowHiddenWords() { showToast('🔤 Hidden words — coming soon', 'info'); }
-function lgShowFavourites() { showToast('⭐ Favourites — coming soon', 'info'); }
-function lgShowMuted() { showToast('🔕 Muted — coming soon', 'info'); }
-function lgShowContentPrefs() { showToast('🎨 Content — coming soon', 'info'); }
-function lgShowLikeCounts() { showToast('❤️ Like counts — coming soon', 'info'); }
-function lgShowPermissions() { showToast('📱 Permissions — coming soon', 'info'); }
-function lgShowArchiving() { showToast('📥 Archiving — coming soon', 'info'); }
-function lgShowAccessibility() { showToast('♿ Accessibility — coming soon', 'info'); }
-function lgShowLanguage() { showToast('🌐 Language — coming soon', 'info'); }
-function lgShowDataUsage() { showToast('📊 Data usage — coming soon', 'info'); }
-function lgShowSupervision() { showToast('👨‍👩‍👧 Supervision — coming soon', 'info'); }
-function lgShowEmailVerify() { showToast('📧 Email verification — coming soon', 'info'); }
-function lgShowPhoneVerify() { showToast('📱 Phone verification — coming soon', 'info'); }
-
-function lgOpenTwoStep() {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md z-[95] flex items-center justify-center p-4';
-    modal.innerHTML = `
-        <div class="glass-card w-full max-w-md p-6 rounded-2xl border border-pink-500/30 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-heading font-bold text-lg text-white">🔐 Two-Step Verification</h3>
-                <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-xs text-slate-300">Add an extra layer of security to your account. When you log in from a new device, you'll need to enter a special code.</p>
-            <div class="space-y-2">
-                <button onclick="lgEnable2FA('email')" class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-left hover:border-pink-500/40">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-envelope text-pink-400"></i>
-                        <div><p class="text-sm font-bold text-white">Email</p><p class="text-[10px] text-slate-400">${currentUser?.email || 'Add email first'}</p></div>
-                    </div>
-                </button>
-                <button onclick="lgEnable2FA('phone')" class="w-full p-3 rounded-xl bg-slate-900 border border-slate-800 text-left hover:border-pink-500/40">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-mobile text-pink-400"></i>
-                        <div><p class="text-sm font-bold text-white">Phone</p><p class="text-[10px] text-slate-400">Coming soon</p></div>
-                    </div>
-                </button>
-            </div>
-            <button onclick="this.closest('.fixed').remove()" class="w-full py-2 rounded-xl glass-card text-xs text-slate-300">Close</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function lgEnable2FA(method) {
-    if (method === 'email' && !currentUser?.email) return showToast('Add email first', 'error');
-    showToast('🔐 2FA enabled via ' + method, 'success');
-    document.querySelector('.fixed.z-\\[95\\]')?.remove();
-}
-
-function lgDeleteAccount() {
-    if (!confirm('⚠️ Delete your account permanently? This cannot be undone!')) return;
-    if (!confirm('Are you REALLY sure? All posts and messages will be lost!')) return;
-    showToast('Account deletion — contact admin', 'error');
-}
-
-// ==================== DOWNLOAD APP ====================
-function downloadAppView() {
-    return `<div id="view-downloadApp" class="tab-content hidden space-y-6">
-        <div class="text-center">
-            <h2 class="text-3xl font-heading font-extrabold bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">📥 Download Apps</h2>
-            <p class="text-slate-400 text-sm mt-2">Install as PWA on your home screen</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            
-            <!-- Ultra Suite Card -->
-            <div class="glass-card p-6 rounded-3xl border-2 border-indigo-500/40 bg-gradient-to-br from-slate-900 to-indigo-950/40 text-center">
-                <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-2xl shadow-indigo-500/50 mb-4">
-                    <i class="fa-solid fa-bolt text-white text-3xl"></i>
-                </div>
-                <h3 class="font-heading font-extrabold text-2xl text-white mb-2">Ultra Suite</h3>
-                <p class="text-xs text-slate-400 mb-4">50+ Tools · Notes · Games · Utilities</p>
-                <div class="space-y-2 text-left text-xs text-slate-300 mb-5">
-                    <p>✅ Notes Pad</p>
-                    <p>✅ Alarm & Timer</p>
-                    <p>✅ QR & Colors</p>
-                    <p>✅ Games Zone</p>
-                    <p>✅ Live Editor</p>
-                </div>
-                <button onclick="installPWA()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm shadow-lg">
-                    <i class="fa-solid fa-download mr-2"></i>Download Ultra Suite
-                </button>
-            </div>
-
-            <!-- LocalGram Card -->
-            <div class="glass-card p-6 rounded-3xl border-2 border-pink-500/40 bg-gradient-to-br from-slate-900 to-pink-950/40 text-center">
-                <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-pink-600 via-purple-600 to-indigo-500 flex items-center justify-center shadow-2xl shadow-pink-500/50 mb-4">
-                    <i class="fa-brands fa-instagram text-white text-3xl"></i>
-                </div>
-                <h3 class="font-heading font-extrabold text-2xl text-white mb-2">LocalGram</h3>
-                <p class="text-xs text-slate-400 mb-4">Social Media · Post · Chat · Stories</p>
-                <div class="space-y-2 text-left text-xs text-slate-300 mb-5">
-                    <p>✅ Post & Stories</p>
-                    <p>✅ Notes + Music</p>
-                    <p>✅ Chat & Messages</p>
-                    <p>✅ Follow & Like</p>
-                    <p>✅ Profile & Settings</p>
-                </div>
-                <button onclick="installPWA()" class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm shadow-lg">
-                    <i class="fa-solid fa-download mr-2"></i>Download LocalGram
-                </button>
-            </div>
-
-        </div>
-
-        <!-- Install Instructions -->
-        <div class="glass-card p-5 rounded-2xl max-w-2xl mx-auto border border-amber-500/30 bg-amber-950/20">
-            <h4 class="font-bold text-amber-300 text-sm mb-3"><i class="fa-solid fa-circle-info mr-2"></i>Install Instructions</h4>
-            <div class="text-xs text-slate-300 space-y-2">
-                <p><b>📱 Android (Chrome):</b> Menu (⋮) → "Install app" / "Add to Home screen"</p>
-                <p><b>📱 iPhone (Safari):</b> Share button → "Add to Home Screen"</p>
-                <p><b>💻 Desktop:</b> Address bar এ install icon চাপুন</p>
-            </div>
-        </div>
-
-        <!-- Share -->
-        <div class="text-center pt-4">
-            <p class="text-slate-400 text-xs mb-3">Share with friends</p>
-            <div class="flex justify-center gap-3">
-                <button onclick="shareApp()" class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold"><i class="fa-solid fa-share mr-1"></i>Share App</button>
-                <button onclick="copyAppLink()" class="px-6 py-2.5 rounded-xl glass-card text-slate-200 text-xs font-bold"><i class="fa-solid fa-copy mr-1"></i>Copy Link</button>
-            </div>
-        </div>
-    </div>`;
-}
-
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-function installPWA() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choice => {
-            if (choice.outcome === 'accepted') showToast('✅ App installed!', 'success');
-            deferredPrompt = null;
-        });
-    } else {
-        showToast('📱 Use browser menu → "Add to Home Screen"', 'info');
-    }
-}
-
-function shareApp() {
-    if (navigator.share) {
-        navigator.share({ title: 'Ultra Suite + LocalGram', text: 'Check out this app!', url: window.location.href });
-    } else {
-        copyAppLink();
-    }
-}
-
-function copyAppLink() {
-    navigator.clipboard.writeText(window.location.href);
-    showToast('📋 Link copied!', 'success');
-}
-
-// ==================== INITIALIZE ====================
-function initializeViews() {
-    renderNotesList();
-    renderAlarms();
-    updateWaterUI();
-    renderTransactions();
-    renderTodos();
-    renderCustomApps();
-    newQuote();
-    generatePalette();
-    updateConverterUnits();
-    initCanvas();
-    runDevCode();
-    loadEditorTemplate();
-    new2048();
-    newSudoku();
-    renderHabits();
-    renderCalendar();
-    updatePomodoroDisplay();
-    
-    const vc = document.getElementById('visualizerCanvas');
-    if (vc) {
-        const ctx = vc.getContext('2d');
-        let t = 0;
-        (function draw() {
-            ctx.clearRect(0, 0, vc.width, vc.height);
-            ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 2; ctx.beginPath();
-            for (let x = 0; x < vc.width; x++) {
-                const y = vc.height / 2 + Math.sin(x * 0.05 + t) * 30 * Math.sin(x * 0.02 + t * 0.5);
-                if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.stroke(); t += 0.05;
-            requestAnimationFrame(draw);
-        })();
-    }
-    const mf = document.getElementById('mediaFileInput');
-    if (mf) mf.addEventListener('change', e => { const file = e.target.files[0]; if (!file) return; const p = document.getElementById('studioMediaPlayer'); if (p) { p.src = URL.createObjectURL(file); p.classList.remove('hidden'); } });
-    
-    if (currentUser) {
-        const wn = document.getElementById('welcomeUserName');
-        if (wn) wn.textContent = currentUser.displayName || currentUser.username;
-    }
-}
-
-console.log('%c📦 PART 3 Loaded ✅', 'color:#10b981;font-size:14px;font-weight:bold');
-console.log('%c🚀 LocalGram + 50 Tools ready!', 'color:#6366f1;font-size:16px;font-weight:bold');
+console.log('%c📦 PART 3 Message 1 Loaded ✅', 'color:#10b981;font-size:14px;font-weight:bold');
