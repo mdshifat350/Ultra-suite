@@ -1,4 +1,5 @@
-// ==================== PART 2: CORE JAVASCRIPT ====================
+var FS = firebase.firestore();
+var AUTH = firebase.auth();// ==================== PART 2: CORE JAVASCRIPT ====================
 // Auth, Users, Messages, Admin, Notes, Alarm, Timer
 
 // ==================== CONFIG ====================
